@@ -71,6 +71,8 @@ void LD(Cpub *cpub,Uword code) //(B)->A
 			cpub->pc += 1;
 			break;
 			case 0b00000111: //B=(IX+d) data_mem
+			printf("(IX+d)\n");
+			printf("%x\n",cpub->mem[0x100+cpub->ix+cpub->mem[cpub->pc]]);
 			cpub->acc = cpub->mem[0x100 +  cpub->ix + cpub->mem[cpub->pc]];
 			cpub->pc += 1;
 			break;
@@ -177,6 +179,7 @@ void JR(Cpub *cpub)
 void JAL(Cpub *cpub)
 {
 	printf("JAL\n");
+	//jalを取り出している時点でcpub->pcに1加算されているので1だけ足す
 	cpub->acc = cpub->pc + 1;
 	cpub->pc = cpub->mem[cpub->pc];
 }
