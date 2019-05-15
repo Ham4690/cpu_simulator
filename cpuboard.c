@@ -168,6 +168,18 @@ void ST(Cpub *cpub,Uword code)
 	}
 }
 
+void JR(Cpub *cpub)
+{
+	printf("JR\n");
+	cpub->pc = cpub->acc;
+}
+
+void JAL(Cpub *cpub)
+{
+	printf("JAL\n");
+	cpub->acc = cpub->pc + 1;
+	cpub->pc = cpub->mem[cpub->pc];
+}
 
 void set_znv_flag(Cpub *cpub, Uword A, Bit msb_A, Bit msb_B)
 {
@@ -212,6 +224,12 @@ int step(Cpub *cpub)
 		break;
 		case 0x0f : //HALT
 		return RUN_HALT;
+		case 0x0a: //JAL
+		JAL(cpub);
+		break;
+		case 0x0b: //JR
+		JR(cpub);
+		break;
 		default:
 		break;
 	}
@@ -222,6 +240,7 @@ int step(Cpub *cpub)
 		break;
 		case 0x70: //ST
 		ST(cpub,obj_code);
+		break;
 		default:
 		break;
 	}
@@ -485,5 +504,5 @@ int step(Cpub *cpub)
 		}
 		break;
 	}
-
+	return 1 ;
 }
