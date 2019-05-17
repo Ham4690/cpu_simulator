@@ -70,10 +70,10 @@ init_cpub(void)
 	return 0;
 }
 
-
 /*=============================================================================
  *   Main Routine: Command Interpreter
  *===========================================================================*/
+
 int
 main()
 {
@@ -84,9 +84,13 @@ main()
 	int	cpub_id;		/* current CPU board ID */
 	int	n;
 
+
+	//reset start
+
 	/*
 	 *   Initialize the CPU board state
 	 */
+
 	cpub_id = init_cpub();
 	cpub = &(cpuboard[cpub_id]);
 
@@ -147,6 +151,7 @@ main()
 			if( n != 3 ) goto syntaxerr;
 			set_mem(cpub,arg1,arg2);
 			break;
+			// read : prog 
 		   case 'r':
 			if( n != 2 ) goto syntaxerr;
 			read_mem_file(cpub,arg1);
@@ -207,14 +212,18 @@ cont(Cpub *cpub, char *straddr)
 	 */
 	count = 1;
 	do {
+
 		if( step(cpub) == RUN_HALT ) {
 			fprintf(stderr,"Program Halted.\n");
+			
 			return;
 		}
-		if( count++ > MAX_EXEC_COUNT*10000 ) {
+		/*
+		if( count++ > MAX_EXEC_COUNT * 10000 ) {
 			fprintf(stderr,"Too Many Instructions are Executed.\n");
 			return;
 		}
+		*/
 	} while( cpub->pc != breakp );
 }
 
@@ -405,7 +414,11 @@ read_mem_file(Cpub *cpub, char *file)
 								token,addr);
 				goto error;
 			}
+		
+
 			addr |= area;
+	
+
 		} else {			/* instruction word or data */
 			sscanf(token,"%x",&word);
 			if( word > 0xff ) {
@@ -436,3 +449,5 @@ unknown_command(void)
 {
 	fprintf(stderr,"Unknown command. Type \'h\' for help.\n");
 }
+
+
