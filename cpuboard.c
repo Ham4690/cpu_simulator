@@ -71,8 +71,6 @@ void LD(Cpub *cpub,Uword code) //(B)->A
 			cpub->pc += 1;
 			break;
 			case 0b00000111: //B=(IX+d) data_mem
-			printf("(IX+d)\n");
-			printf("%x\n",cpub->mem[0x100+cpub->ix+cpub->mem[cpub->pc]]);
 			cpub->acc = cpub->mem[0x100 +  cpub->ix + cpub->mem[cpub->pc]];
 			cpub->pc += 1;
 			break;
@@ -169,13 +167,13 @@ void ST(Cpub *cpub,Uword code)
 		break;
 	}
 }
-
+/*
 void JR(Cpub *cpub)
 {
 	printf("JR\n");
-	cpub->pc = cpub->acc;
 }
-
+*/
+/*
 void JAL(Cpub *cpub)
 {
 	printf("JAL\n");
@@ -183,6 +181,7 @@ void JAL(Cpub *cpub)
 	cpub->acc = cpub->pc + 1;
 	cpub->pc = cpub->mem[cpub->pc];
 }
+*/
 
 void set_znv_flag(Cpub *cpub, Uword A, Bit msb_A, Bit msb_B)
 {
@@ -228,10 +227,11 @@ int step(Cpub *cpub)
 		case 0x0f : //HALT
 		return RUN_HALT;
 		case 0x0a: //JAL
-		JAL(cpub);
+		cpub->acc = cpub->pc + 1;
+		cpub->pc = cpub->mem[cpub->pc];
 		break;
 		case 0x0b: //JR
-		JR(cpub);
+		cpub->pc = cpub->acc;
 		break;
 		default:
 		break;
