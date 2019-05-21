@@ -214,9 +214,13 @@ int step(Cpub *cpub)
 		break;
 		case 0x10 : //OUT (ACC) -> OBUF
 		cpub->obuf.buf = cpub->acc;
+		cpub->obuf.flag=1;
 		break;
 		case 0x1f : //IN (IBUF) -> ACC
-		cpub->acc = cpub->ibuf->buf;
+		if(cpub->ibuf->flag==1){
+			cpub->acc = cpub->ibuf->buf;
+			cpub->ibuf->flag=0;
+		}
 		break;
 		case 0x20 : //RCF 0 -> CF
 		cpub->cf = 0;
@@ -411,10 +415,10 @@ int step(Cpub *cpub)
 		}
 		break;
 		case 0x34 :  // BNI
-		if(  cpub->obuf.flag == 0  ) {
+		if(  cpub->ibuf->flag== 0  ) {
 			cpub ->pc =  cpub->mem[ returnaddr(cpub) ] ;
 		}
-		else if( cpub->obuf.flag != 0  ) {
+		else if( cpub->ibuf->flag != 0  ) {
 			cpub->pc += 1;
 		}
 		break;
@@ -474,7 +478,7 @@ int step(Cpub *cpub)
 			cpub->pc += 1;
 		}
 		break;
-		case 0x3C :  // BNZ
+		case 0x3C :  // BNO
 		if( cpub->obuf.flag == 1 ) {
 			cpub ->pc =  cpub->mem[ returnaddr(cpub) ] ;
 		}
